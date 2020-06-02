@@ -1,0 +1,7 @@
+{
+    "require": {
+        "guzzlehttp/guzzle": "^6.5",
+        "nesbot/carbon": "^2.35",
+        "ext-json": "*"
+    }
+}
