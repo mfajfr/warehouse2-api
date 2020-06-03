@@ -25,6 +25,8 @@ class Item extends AbstractModel implements \JsonSerializable
 
     /** @var string[] */
     protected $name = [];
+    /** @var Param[] */
+    protected $params = [];
 
     /**
      * Item constructor.
@@ -94,6 +96,16 @@ class Item extends AbstractModel implements \JsonSerializable
             $json[$key]['name'] = $value;
         }
 
+        $json['params'] = [];
+        foreach ($this->params as $param) {
+            $json['params'][] = $param->jsonSerialize();
+        }
+
         return $json;
+    }
+
+    public function addParam(Param $param)
+    {
+        $this->params[] = $param;
     }
 }

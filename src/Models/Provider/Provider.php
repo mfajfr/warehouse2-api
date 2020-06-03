@@ -50,7 +50,7 @@ class Provider extends AbstractModel implements \JsonSerializable
         ];
     }
 
-    public function storeItem(Item $item, $providerItemId, $stocked = 0, $buyPriceWithoutTax = null, $stockedType = null)
+    public function storeItem(Item $item, $providerItemId, $stocked = 0, $buyPriceWithoutTax = 0, $stockedType = 'stocked')
     {
         $data = $item->jsonSerialize() + ['provider_item' => [
                 'provider_item_id' => $providerItemId,
