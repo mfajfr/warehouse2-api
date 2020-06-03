@@ -1,7 +1,21 @@
 {
+    "authors": [
+        {
+            "name": "Ing. Marek Fajfr",
+            "email": "mfajfr90@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "HeurekaFeed\\": "src/"
+        }
+    },
+    "description": "Warehouse v2 API",
+    "name": "mfajfr/warehouse-api",
     "require": {
         "guzzlehttp/guzzle": "^6.5",
         "nesbot/carbon": "^2.35",
         "ext-json": "*"
-    }
+    },
+    "type": "library"
 }
