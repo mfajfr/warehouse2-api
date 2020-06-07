@@ -3,6 +3,7 @@
 namespace WarehouseApi\Models\Item;
 
 use Carbon\Carbon;
+use WarehouseApi\Connection;
 use WarehouseApi\Models\AbstractModel;
 use WarehouseApi\Traits\UidFindTrait;
 
@@ -29,6 +30,8 @@ class Item extends AbstractModel implements \JsonSerializable
     protected $params = [];
     /** @var int */
     protected $remoteStocked;
+    /** @var string */
+    protected $imgUrl;
 
     /**
      * Item constructor.
@@ -91,6 +94,10 @@ class Item extends AbstractModel implements \JsonSerializable
 
         if (array_key_exists('remoteStocked', $row)) {
             $item->setRemoteStocked($row['remoteStocked']);
+        }
+
+        if (array_key_exists('imgUrl', $row)) {
+            $item->setImgUrl($row['imgUrl']);
         }
 
         return $item;
@@ -185,5 +192,32 @@ class Item extends AbstractModel implements \JsonSerializable
     public function getParams(): array
     {
         return $this->params;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImgUrl(): string
+    {
+        return $this->imgUrl;
+    }
+
+    /**
+     * @param string $imgUrl
+     */
+    public function setImgUrl(string $imgUrl): void
+    {
+        $this->imgUrl = $imgUrl;
+    }
+
+    public function uploadImage($url)
+    {
+        $result = Connection::post(
+            static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/upload-image',
+            [
+                'url' => $url
+            ]
+        );
+        return json_decode($result->getBody()->getContents(), true);
     }
 }
