@@ -3,6 +3,7 @@
 namespace WarehouseApi\Models\Item;
 
 use Carbon\Carbon;
+use Cocur\Slugify\Slugify;
 use WarehouseApi\Models\AbstractModel;
 
 class Param extends AbstractModel implements \JsonSerializable
@@ -13,6 +14,9 @@ class Param extends AbstractModel implements \JsonSerializable
     protected $name;
     /** @var string */
     protected $value;
+
+    /** @var Slugify */
+    protected static $slugify;
 
     public function __construct(
         ?int $id,
@@ -27,7 +31,16 @@ class Param extends AbstractModel implements \JsonSerializable
         parent::__construct($id, $uid, $created_at, $updated_at, $deleted_at);
         $this->name = $name;
         $this->value = $value;
-        $this->indexName = $indexName;
+        $this->indexName = $indexName == null ? self::getSlugify()->slugify($name) : $indexName;
+    }
+
+    public static function getSlugify()
+    {
+        if (self::$slugify === null) {
+            self::$slugify = new Slugify();
+        }
+
+        return self::$slugify;
     }
 
     public static function create($row)
