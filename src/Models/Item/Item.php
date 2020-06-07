@@ -220,4 +220,12 @@ class Item extends AbstractModel implements \JsonSerializable
         );
         return json_decode($result->getBody()->getContents(), true);
     }
+
+    /**
+     * @return int
+     */
+    public function getRemoteStocked(): int
+    {
+        return $this->remoteStocked;
+    }
 }
