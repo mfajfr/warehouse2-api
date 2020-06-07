@@ -27,6 +27,8 @@ class Item extends AbstractModel implements \JsonSerializable
     protected $name = [];
     /** @var Param[] */
     protected $params = [];
+    /** @var int */
+    protected $remoteStocked;
 
     /**
      * Item constructor.
@@ -86,6 +88,11 @@ class Item extends AbstractModel implements \JsonSerializable
                 Param::create($param)
             );
         }
+
+        if (array_key_exists('remoteStocked', $row)) {
+            $item->setRemoteStocked($row['remoteStocked']);
+        }
+
         return $item;
     }
 
@@ -114,6 +121,14 @@ class Item extends AbstractModel implements \JsonSerializable
     public function addParam(Param $param)
     {
         $this->params[$param->getIndexName()] = $param;
+    }
+
+    /**
+     * @param int $remoteStocked
+     */
+    public function setRemoteStocked(int $remoteStocked): void
+    {
+        $this->remoteStocked = $remoteStocked;
     }
 
     /**
