@@ -67,7 +67,7 @@ class Item extends AbstractModel implements \JsonSerializable
     public static function create($row)
     {
         $name = [];
-        return new static(
+        $item = new static(
             $row['id'],
             $row['uid'],
             $row['catalog_number'],
@@ -80,6 +80,14 @@ class Item extends AbstractModel implements \JsonSerializable
             new Carbon($row['updated_at']),
             $row['deleted_at'] === null ? null : new Carbon($row['deleted_at'])
         );
+
+        foreach ($row['params'] as $param) {
+            $param['value'] = $param['pivot']['value'];
+            $item->addParam(
+                Param::create($param)
+            );
+        }
+        return $item;
     }
 
     public function jsonSerialize()
@@ -107,5 +115,13 @@ class Item extends AbstractModel implements \JsonSerializable
     public function addParam(Param $param)
     {
         $this->params[] = $param;
+    }
+
+    /**
+     * @param Param[] $params
+     */
+    public function setParams(array $params): void
+    {
+        $this->params = $params;
     }
 }
