@@ -113,7 +113,7 @@ class Item extends AbstractModel implements \JsonSerializable
 
     public function addParam(Param $param)
     {
-        $this->params[] = $param;
+        $this->params[$param->getIndexName()] = $param;
     }
 
     /**
