@@ -118,10 +118,58 @@ class Item extends AbstractModel implements \JsonSerializable
     }
 
     /**
-     * @param Param[] $params
+     * @return string
      */
-    public function setParams(array $params): void
+    public function getCatalogNumber(): string
     {
-        $this->params = $params;
+        return $this->catalogNumber;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEan(): string
+    {
+        return $this->ean;
+    }
+
+    /**
+     * @return string
+     */
+    public function getQuantityUnit(): string
+    {
+        return $this->quantityUnit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getReserved(): int
+    {
+        return $this->reserved;
+    }
+
+    /**
+     * @return int
+     */
+    public function getStocked(): int
+    {
+        return $this->stocked;
+    }
+
+    /**
+     * @return string[]
+     */
+    public function getName(): array
+    {
+        return $this->name;
+    }
+
+    /**
+     * @return Param[]
+     */
+    public function getParams(): array
+    {
+        return $this->params;
     }
 }
