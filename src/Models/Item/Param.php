@@ -34,13 +34,13 @@ class Param extends AbstractModel implements \JsonSerializable
     {
         return new static(
             $row['id'],
-            $row['uid'],
+            null,
             $row['name'],
             $row['value'],
-            $row['indexName'],
+            $row['index_name'],
             new Carbon($row['created_at']),
             new Carbon($row['updated_at']),
-            $row['deleted_at'] === null ? null : new Carbon($row['deleted_at'])
+            null
         );
     }
 
