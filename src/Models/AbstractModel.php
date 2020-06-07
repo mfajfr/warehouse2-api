@@ -76,4 +76,44 @@ class AbstractModel
     {
         return json_decode(static::method(self::COUNT_METHOD, $params), true)['count'];
     }
+
+    /**
+     * @return int|null
+     */
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getUid(): ?string
+    {
+        return $this->uid;
+    }
+
+    /**
+     * @return Carbon|null
+     */
+    public function getCreatedAt(): ?Carbon
+    {
+        return $this->created_at;
+    }
+
+    /**
+     * @return Carbon|null
+     */
+    public function getUpdatedAt(): ?Carbon
+    {
+        return $this->updated_at;
+    }
+
+    /**
+     * @return Carbon|null
+     */
+    public function getDeletedAt(): ?Carbon
+    {
+        return $this->deleted_at;
+    }
 }
