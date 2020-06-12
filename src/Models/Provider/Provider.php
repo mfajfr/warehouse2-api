@@ -63,7 +63,8 @@ class Provider extends AbstractModel implements \JsonSerializable
             Connection::post(
                 static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/store',
                 $data
-            )
+            )->getBody()->getContents(),
+            true
         );
 
         return Item::create($result[Item::MODEL]);
@@ -82,7 +83,8 @@ class Provider extends AbstractModel implements \JsonSerializable
             Connection::post(
                 static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/' . $providerItemId . '/store-update',
                 $data
-            )
+            )->getBody()->getContents(),
+            true
         );
 
         return Item::create($result[Item::MODEL]);
@@ -102,7 +104,8 @@ class Provider extends AbstractModel implements \JsonSerializable
             Connection::patch(
                 static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/' . $providerItemId . '/update',
                 $data
-            )
+            )->getBody()->getContents(),
+            true
         );
 
         return Item::create($result[Item::MODEL]);

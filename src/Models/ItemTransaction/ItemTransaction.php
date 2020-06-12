@@ -13,19 +13,18 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
 {
     use UidFindTrait;
     use ReferenceIdFindTrait;
-    use StoreTrait;
 
     const VERSION = 'v1';
-    const MODEL = 'provider';
-    const MODELS = 'providers';
+    const MODEL = 'item-transaction';
+    const MODELS = 'item-transactions';
 
 
     /** @var string */
-    protected $reference_id;
+    protected $referenceId;
     /** @var string */
     protected $note;
     /** @var Carbon|null */
-    protected $completed_at;
+    protected $completedAt;
 
     protected $items = [];
 
@@ -33,9 +32,9 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
      * ItemTransaction constructor.
      * @param int|null $id
      * @param string|null $uid
-     * @param string $reference_id
+     * @param string $referenceId
      * @param string $note
-     * @param Carbon|null $completed_at
+     * @param Carbon|null $completedAt
      * @param Carbon|null $created_at
      * @param Carbon|null $updated_at
      * @param Carbon|null $deleted_at
@@ -43,21 +42,21 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
     public function __construct(
         ?int $id,
         ?string $uid,
-        string $reference_id,
+        string $referenceId,
         string $note = '',
-        ?Carbon $completed_at = null,
+        ?Carbon $completedAt = null,
         ?Carbon $created_at = null,
         ?Carbon $updated_at = null,
         ?Carbon $deleted_at = null
     )
     {
         parent::__construct($id, $uid, $created_at, $updated_at, $deleted_at);
-        $this->reference_id = $reference_id;
+        $this->referenceId = $referenceId;
         $this->note = $note;
-        $this->completed_at = $completed_at;
+        $this->completedAt = $completedAt;
     }
 
-    public function addItem($item)
+    public function addItem(array $item)
     {
         $this->items[$item['uid']] = $item;
     }
@@ -65,11 +64,25 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
     public function jsonSerialize()
     {
         return [
-            'reference_id' => $this->reference_id,
+            'reference_id' => $this->referenceId,
             'note' => $this->note,
-            'completed_at' => $this->completed_at === null ?: $this->completed_at->format('Y-m-d H:i:s'),
+            'completed_at' => $this->completedAt === null ?: $this->completedAt->format('Y-m-d H:i:s'),
+            '$this->created_at' => $this->created_at === null ?: $this->created_at->format('Y-m-d H:i:s'),
             'items' => $this->items,
         ];
+    }
+
+    public function store()
+    {
+        $result = json_decode(
+            Connection::post(
+                static::VERSION . '/'  . static::MODEL . '/store',
+                $this->jsonSerialize()
+            )->getBody()->getContents(),
+            true);
+        $result[static::MODEL] = static::create($result['itemTransaction']);
+
+        return $result;
     }
 
     public function complete(Carbon $completed_at = null)
@@ -78,13 +91,16 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
             $completed_at = Carbon::now();
         }
 
-        $result = Connection::patch(
-            static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/store',
-            [
-                'completed_at' => $completed_at->format('Y-m-d H:i:s')
-            ]
+        $result = json_decode(
+            Connection::patch(
+                static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/complete',
+                [
+                    'completed_at' => $completed_at->format('Y-m-d H:i:s')
+                ]
+            )
         );
+        $result[static::MODEL] = static::create($result[static::MODEL]);
 
-        return json_decode($result->getBody()->getContents(), true);
+        return $result;
     }
 }

@@ -71,6 +71,10 @@ class Item extends AbstractModel implements \JsonSerializable
 
     public static function create($row)
     {
+        $names = [
+            'cs' => $row['cs']['name']
+        ];
+
         $item = new static(
             $row['id'],
             $row['uid'],
@@ -79,7 +83,7 @@ class Item extends AbstractModel implements \JsonSerializable
             $row['quantity_unit'],
             $row['reserved'],
             $row['stocked'],
-            ['cs' => $row['name']],
+            $names,
             new Carbon($row['created_at']),
             new Carbon($row['updated_at']),
             $row['deleted_at'] === null ? null : new Carbon($row['deleted_at'])
