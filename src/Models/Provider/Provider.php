@@ -59,11 +59,14 @@ class Provider extends AbstractModel implements \JsonSerializable
                 'stocked_type' => $stockedType
                 ]
             ];
-        $result = Connection::post(
-            static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/store',
-            $data
+        $result = json_decode(
+            Connection::post(
+                static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/store',
+                $data
+            )
         );
-        return json_decode($result->getBody()->getContents(), true);
+
+        return static::create($result[static::MODEL]);
     }
 
     public function storeUpdateItem(Item $item, $providerItemId, $stocked = 0, $buyPriceWithoutTax = null, $stockedType = null)
@@ -75,11 +78,14 @@ class Provider extends AbstractModel implements \JsonSerializable
                 ]
             ];
 
-        $result = Connection::post(
-            static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/' . $providerItemId . '/store-update',
-            $data
+        $result = json_decode(
+            Connection::post(
+                static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/' . $providerItemId . '/store-update',
+                $data
+            )
         );
-        return json_decode($result->getBody()->getContents(), true);
+
+        return static::create($result[static::MODEL]);
     }
 
     public function updateItem(Item $item, $providerItemId, $stocked = 0, $buyPriceWithoutTax = null, $stockedType = null)
@@ -91,10 +97,13 @@ class Provider extends AbstractModel implements \JsonSerializable
                 ]
             ];
 
-        $result = Connection::patch(
-            static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/' . $providerItemId . '/update',
-            $data
+        $result = json_decode(
+            Connection::patch(
+                static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/' . $providerItemId . '/update',
+                $data
+            )
         );
-        return json_decode($result->getBody()->getContents(), true);
+
+        return static::create($result[static::MODEL]);
     }
 }
