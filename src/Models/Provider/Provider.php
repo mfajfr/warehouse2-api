@@ -66,7 +66,7 @@ class Provider extends AbstractModel implements \JsonSerializable
             )
         );
 
-        return static::create($result[Item::MODEL]);
+        return Item::create($result[Item::MODEL]);
     }
 
     public function storeUpdateItem(Item $item, $providerItemId, $stocked = 0, $buyPriceWithoutTax = null, $stockedType = null)
@@ -85,15 +85,16 @@ class Provider extends AbstractModel implements \JsonSerializable
             )
         );
 
-        return static::create($result[Item::MODEL]);
+        return Item::create($result[Item::MODEL]);
     }
 
     public function updateItem(Item $item, $providerItemId, $stocked = 0, $buyPriceWithoutTax = null, $stockedType = null)
     {
-        $data = $item->jsonSerialize() + ['provider_item' => [
-                'stocked' => $stocked,
-                'buy_price_without_tax' => $buyPriceWithoutTax,
-                'stocked_type' => $stockedType
+        $data = [
+                'provider_item' => [
+                    'stocked' => $stocked,
+                    'buy_price_without_tax' => $buyPriceWithoutTax,
+                    'stocked_type' => $stockedType
                 ]
             ];
 
@@ -104,6 +105,6 @@ class Provider extends AbstractModel implements \JsonSerializable
             )
         );
 
-        return static::create($result[Item::MODEL]);
+        return Item::create($result[Item::MODEL]);
     }
 }
