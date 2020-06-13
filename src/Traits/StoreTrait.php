@@ -9,7 +9,6 @@ trait StoreTrait
     public function store()
     {
         $result = json_decode(Connection::post(static::VERSION . '/'  . static::MODEL . '/store', $this->jsonSerialize())->getBody()->getContents(), true);
-        $result[static::MODEL] = static::create($result[static::MODEL]);
-        return $result;
+        return static::create($result[static::MODEL]);
     }
 }

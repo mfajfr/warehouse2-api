@@ -15,7 +15,7 @@ class Item extends AbstractModel implements \JsonSerializable
 
     /** @var string */
     protected $catalogNumber;
-    /** @var string */
+    /** @var string|null */
     protected $ean;
     /** @var string */
     protected $quantityUnit;
@@ -38,7 +38,7 @@ class Item extends AbstractModel implements \JsonSerializable
      * @param int|null $id
      * @param string|null $uid
      * @param string $catalogNumber
-     * @param string $ean
+     * @param string|null $ean
      * @param string $quantityUnit
      * @param int $reserved
      * @param int $stocked
@@ -51,7 +51,7 @@ class Item extends AbstractModel implements \JsonSerializable
         ?int $id,
         ?string $uid,
         string $catalogNumber,
-        string $ean,
+        ?string $ean = '',
         string $quantityUnit,
         int $reserved,
         int $stocked,

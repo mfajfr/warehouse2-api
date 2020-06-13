@@ -72,6 +72,22 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
         ];
     }
 
+    public static function findByReferenceId($referenceId)
+    {
+        $result = Connection::get('v1/' . static::MODEL . '/reference_id/' . $referenceId . '/find');
+        $data = json_decode($result->getBody()->getContents(), true)['itemTransaction'];
+
+        return static::create($data);
+    }
+
+    public static function findByUid($uid)
+    {
+        $result = Connection::get('v1/' . static::MODEL . '/uid/' . $uid . '/find');
+        $data = json_decode($result->getBody()->getContents(), true)['itemTransaction'];
+
+        return static::create($data);
+    }
+
     public function store()
     {
         $result = json_decode(
@@ -80,6 +96,7 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
                 $this->jsonSerialize()
             )->getBody()->getContents(),
             true);
+
         $result[static::MODEL] = static::create($result['itemTransaction']);
 
         return $result;
