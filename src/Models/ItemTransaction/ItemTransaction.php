@@ -5,19 +5,23 @@ namespace WarehouseApi\Models\Item;
 use Carbon\Carbon;
 use WarehouseApi\Connection;
 use WarehouseApi\Models\AbstractModel;
+use WarehouseApi\Traits\DestroyTrait;
 use WarehouseApi\Traits\ReferenceIdFindTrait;
 use WarehouseApi\Traits\StoreTrait;
 use WarehouseApi\Traits\UidFindTrait;
+use WarehouseApi\Traits\UpdateTrait;
 
 class ItemTransaction extends AbstractModel implements \JsonSerializable
 {
     use UidFindTrait;
     use ReferenceIdFindTrait;
+    use StoreTrait;
+    use DestroyTrait;
+    use UpdateTrait;
 
     const VERSION = 'v1';
     const MODEL = 'item-transaction';
     const MODELS = 'item-transactions';
-
 
     /** @var string */
     protected $referenceId;
@@ -25,7 +29,7 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
     protected $note;
     /** @var Carbon|null */
     protected $completedAt;
-
+    /** @var array */
     protected $items = [];
 
     /**
@@ -56,6 +60,20 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
         $this->completedAt = $completedAt;
     }
 
+    public static function create($row)
+    {
+        return new ItemTransaction(
+            $row['id'],
+            $row['uid'],
+            $row['reference_id'] === null ? '' : $row['reference_id'],
+            $row['note'] === null ? '' : $row['note'],
+            $row['completed_at'] === null ? null : new Carbon($row['completed_at']),
+            new Carbon($row['created_at']),
+            new Carbon($row['updated_at']),
+            $row['deleted_at'] === null ? null : new Carbon($row['deleted_at'])
+        );
+    }
+
     public function addItem(array $item)
     {
         $this->items[$item['uid']] = $item;
@@ -66,43 +84,13 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
         return [
             'reference_id' => $this->referenceId,
             'note' => $this->note,
-            'completed_at' => $this->completedAt === null ?: $this->completedAt->format('Y-m-d H:i:s'),
-            '$this->created_at' => $this->created_at === null ?: $this->created_at->format('Y-m-d H:i:s'),
+            'completed_at' => $this->completedAt === null ? null : $this->completedAt->format('Y-m-d H:i:s'),
+            'created_at' => $this->created_at === null ? null : $this->created_at->format('Y-m-d H:i:s'),
             'items' => $this->items,
         ];
     }
 
-    public static function findByReferenceId($referenceId)
-    {
-        $result = Connection::get('v1/' . static::MODEL . '/reference_id/' . $referenceId . '/find');
-        $data = json_decode($result->getBody()->getContents(), true)['itemTransaction'];
-
-        return static::create($data);
-    }
-
-    public static function findByUid($uid)
-    {
-        $result = Connection::get('v1/' . static::MODEL . '/uid/' . $uid . '/find');
-        $data = json_decode($result->getBody()->getContents(), true)['itemTransaction'];
-
-        return static::create($data);
-    }
-
-    public function store()
-    {
-        $result = json_decode(
-            Connection::post(
-                static::VERSION . '/'  . static::MODEL . '/store',
-                $this->jsonSerialize()
-            )->getBody()->getContents(),
-            true);
-
-        $result[static::MODEL] = static::create($result['itemTransaction']);
-
-        return $result;
-    }
-
-    public function complete(Carbon $completed_at = null)
+    public function complete(Carbon $completed_at = null, string $referenceId = null)
     {
         if ($completed_at === null) {
             $completed_at = Carbon::now();
@@ -110,14 +98,15 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
 
         $result = json_decode(
             Connection::patch(
-                static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/complete',
+                static::VERSION . '/'  . static::MODEL . '/' . $this->uid . '/complete',
                 [
-                    'completed_at' => $completed_at->format('Y-m-d H:i:s')
+                    'completed_at' => $completed_at == null ?: $completed_at->format('Y-m-d H:i:s'),
+                    'reference_id' => $referenceId
                 ]
-            )
+            )->getBody()->getContents(),
+            true
         );
-        $result[static::MODEL] = static::create($result[static::MODEL]);
 
-        return $result;
+        return static::create($result[static::MODEL]);
     }
 }
