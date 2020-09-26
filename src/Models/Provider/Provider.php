@@ -50,6 +50,18 @@ class Provider extends AbstractModel implements \JsonSerializable
         ];
     }
 
+    public function pricelist()
+    {
+        $result = json_decode(
+            Connection::get(
+                static::VERSION . '/'  . static::MODEL . '/uid/' . $this->uid . '/items/pricelist'
+            )->getBody()->getContents(),
+            true
+        );
+
+        return $result['items'];
+    }
+
     public function storeItem(Item $item, $providerItemId, $stocked = 0, $buyPriceWithoutTax = 0, $stockedType = 'stocked')
     {
         $data = $item->jsonSerialize() + ['provider_item' => [

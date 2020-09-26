@@ -1,6 +1,6 @@
 <?php
 
-namespace WarehouseApi\Models\Item;
+namespace WarehouseApi\Models\ItemTransaction;
 
 use Carbon\Carbon;
 use WarehouseApi\Connection;
