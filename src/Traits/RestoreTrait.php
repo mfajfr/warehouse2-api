@@ -4,13 +4,13 @@ namespace WarehouseApi\Traits;
 
 use WarehouseApi\Connection;
 
-trait DestroyTrait
+trait RestoreTrait
 {
-    public function destroy()
+    public function restore()
     {
         $result = json_decode(
             Connection::delete(
-                static::VERSION . '/'  . static::MODEL . '/' . $this->uid .  '/destroy'
+                static::VERSION . '/'  . static::MODEL . '/' . $this->uid .  '/restore'
             )->getBody()->getContents(),
             true
         );

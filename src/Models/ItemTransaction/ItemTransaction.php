@@ -7,6 +7,7 @@ use WarehouseApi\Connection;
 use WarehouseApi\Models\AbstractModel;
 use WarehouseApi\Traits\DestroyTrait;
 use WarehouseApi\Traits\ReferenceIdFindTrait;
+use WarehouseApi\Traits\RestoreTrait;
 use WarehouseApi\Traits\StoreTrait;
 use WarehouseApi\Traits\UidFindTrait;
 use WarehouseApi\Traits\UpdateTrait;
@@ -17,6 +18,7 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
     use ReferenceIdFindTrait;
     use StoreTrait;
     use DestroyTrait;
+    use RestoreTrait;
     use UpdateTrait;
 
     const VERSION = 'v1';
@@ -101,7 +103,7 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
                 static::VERSION . '/'  . static::MODEL . '/' . $this->uid . '/complete',
                 [
                     'completed_at' => $completed_at == null ?: $completed_at->format('Y-m-d H:i:s'),
-                    'reference_id' => $referenceId
+                    'reference_id' => $referenceId,
                 ]
             )->getBody()->getContents(),
             true
