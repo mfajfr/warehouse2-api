@@ -9,8 +9,9 @@ trait RestoreTrait
     public function restore()
     {
         $result = json_decode(
-            Connection::delete(
-                static::VERSION . '/'  . static::MODEL . '/' . $this->uid .  '/restore'
+            Connection::patch(
+                static::VERSION . '/'  . static::MODEL . '/' . $this->uid .  '/restore',
+                []
             )->getBody()->getContents(),
             true
         );
