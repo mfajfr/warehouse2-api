@@ -111,4 +111,12 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
 
         return static::create($result[static::MODEL]);
     }
+
+    /**
+     * @return string
+     */
+    public function getReferenceId(): string
+    {
+        return $this->referenceId;
+    }
 }
