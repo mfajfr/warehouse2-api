@@ -119,4 +119,20 @@ class ItemTransaction extends AbstractModel implements \JsonSerializable
     {
         return $this->referenceId;
     }
+
+    /**
+     * @return string
+     */
+    public function getNote(): string
+    {
+        return $this->note;
+    }
+
+    /**
+     * @return Carbon|null
+     */
+    public function getCompletedAt(): ?Carbon
+    {
+        return $this->completedAt;
+    }
 }
